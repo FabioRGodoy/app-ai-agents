@@ -1,10 +1,11 @@
 {
 	"name": "@repo/database",
-	"main": "./index.ts",
-	"types": "./**/.tsx",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"version": "0.0.0",
 	
 	"scripts": {
+		"build": "tsc",
 		"generate": "prisma generate --no-hints --schema=./prisma/schema.prisma",
 		"push": "dotenv -c -e ../../.env -- prisma db push --skip-generate --schema=./prisma/schema.prisma",
 		"migrate": "dotenv -c -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
