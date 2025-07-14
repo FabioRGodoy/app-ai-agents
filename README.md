@@ -87,6 +87,12 @@ pnpm run lint
 pnpm format
 ```
 
+#### Generate Prisma dist
+
+```bash
+pnpm run build
+```
+
 ### Remote Caching
 
 > [!TIP]

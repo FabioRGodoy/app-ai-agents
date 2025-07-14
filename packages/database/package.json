@@ -12,7 +12,7 @@
 		"studio": "dotenv -c -e ../../.env -- prisma studio --schema=./prisma/schema.prisma",
 		"type-check": "tsc --noEmit"
 	},
-	"dependencies": {
+  	"dependencies": {
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@prisma/client": "^6.6.0",
 		"drizzle-orm": "^0.42.0",
