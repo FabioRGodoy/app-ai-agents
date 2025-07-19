@@ -1,12 +1,9 @@
-import { User } from '@repo/database';
 import {
   IsEmail,
-  IsInt,
+  IsOptional,
   IsString,
   Matches,
-  Max,
   MaxLength,
-  Min,
   MinLength,
 } from 'class-validator';
 
@@ -25,8 +22,23 @@ export class CreateUserDto {
   @IsString()
   name: string;
 
-  @IsInt()
-  @Min(16)
-  @Max(100)
-  age: number;
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  username?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  image?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  role?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
+  locale?: string;
 }

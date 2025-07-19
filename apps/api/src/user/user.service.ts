@@ -1,65 +1,95 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { UserMapper } from './user.mapper';
+import * as bcrypt from 'bcrypt';
+import { handleServiceError } from 'src/common/utils/handle-service-error';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
-    return createUserDto
+    try {
+      const userExists = await this.prisma.user.findUnique({
+        where: { email: createUserDto.email },
+      });
+
+      if (userExists) {
+        throw new ConflictException('E-mail já está cadastrado');
+      }
+
+      const passwordHash = await bcrypt.hash(createUserDto.password, 10);
+
+      const newUser = await this.prisma.user.create({
+        data: {
+          ...createUserDto,
+          password: passwordHash,
+          emailVerified: false,
+        },
+      });
+
+      return UserMapper.toResponseDto(newUser);
+    } catch (error) {
+      handleServiceError('UserService.create', error, this.logger, 'Erro ao criar usuário');
+    }
   }
 
   async findOne(id: string) {
     try {
-      const data = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id },
       });
 
-      const user = {
-        ...data,
-        password: undefined,
-      };
+      if (!user) {
+        throw new NotFoundException('Usuário não encontrado');
+      }
 
-      return user;
+      return UserMapper.toResponseDto(user);
     } catch (error) {
-      throw new Error('Erro ao buscar o usuário');
+      handleServiceError('UserService.findOne', error, this.logger, 'Erro ao buscar o usuário');
     }
   }
 
   async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { email },
     });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const updateUser = await this.prisma.user.update({
+      const { password: _, role: __, ...data } = updateUserDto;
+
+      const updatedUser = await this.prisma.user.update({
         where: { id },
-        data: {
-          ...updateUserDto
-        },
+        data,
       });
 
-      const user = {
-        ...updateUser,
-        password: undefined,
-      };
-
-      return user;
+      return UserMapper.toResponseDto(updatedUser);
     } catch (error) {
-      throw error;
+      handleServiceError('UserService.update', error, this.logger, 'Erro ao atualizar usuário');
     }
   }
 
   async remove(id: string) {
     try {
-      await this.prisma.user.delete({ where: { id } });
-      return 'Usuário excluído com sucesso';
+      await this.prisma.user.delete({
+        where: { id },
+      });
+
+      return { status: 'ok' };
     } catch (error) {
-      throw error;
+      handleServiceError('UserService.remove', error, this.logger, 'Erro ao deletar usuário');
     }
   }
 }

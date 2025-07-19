@@ -11,7 +11,7 @@ export class AppController {
   @IsPublic()
   @Get()
   getHello(): any {
-    return this.appService.getUsers();
+    return this.appService.getHello();
   }
 
   @Get('me')
