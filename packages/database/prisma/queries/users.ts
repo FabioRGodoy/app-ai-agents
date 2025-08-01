@@ -21,29 +21,3 @@ export async function getUserByEmail(email: string) {
 	});
 }
 
-export async function createUser({
-	email,
-	name,
-	role,
-	emailVerified,
-	onboardingComplete,
-}: {
-	email: string;
-	name: string;
-	role: "admin" | "user";
-	emailVerified: boolean;
-	onboardingComplete: boolean;
-}) {
-	return await db.user.create({
-		data: {
-			id: nanoid(),
-			email,
-			name,
-			role,
-			emailVerified,
-			onboardingComplete,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		},
-	});
-}

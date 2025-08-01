@@ -11,7 +11,10 @@
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "setup": "pnpm install && pnpm run generate && pnpm run build",
+    "dev:setup": "pnpm run setup && pnpm run dev",
+    "db:setup": "pnpm run --filter @repo/database generate && pnpm run --filter @repo/database push"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
