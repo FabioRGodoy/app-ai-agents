@@ -21,7 +21,7 @@ This Turborepo includes the following packages/apps:
     │   ├── api                       # NestJS app (https://nestjs.com).
     │   └── web                       # Next.js app (https://nextjs.org).
     └── packages
-        ├── @repo/api                 # Shared `NestJS` resources.
+        ├── @repo/database            # Shared `NestJS` resources.
         ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
         ├── @repo/jest-config         # `jest` configurations
         ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
@@ -85,6 +85,12 @@ pnpm run lint
 # Will format all the supported `.ts,.js,json,.tsx,.jsx` files.
 # See `@repo/eslint-config/prettier-base.js` to customize the behavior.
 pnpm format
+```
+
+#### Generate Prisma dist
+
+```bash
+pnpm run build
 ```
 
 ### Remote Caching
